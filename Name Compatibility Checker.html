@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Name Compatibility Checker</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #ff758c, #ff7eb3);
+        color: #1f2937;
+    }
+
+    .container {
+        width: min(100%, 500px);
+        padding: 35px;
+        text-align: center;
+        background: white;
+        border-radius: 22px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+        font-size: 32px;
+        margin-bottom: 8px;
+    }
+
+    .subtitle {
+        color: #6b7280;
+        margin-bottom: 28px;
+    }
+
+    .inputs {
+        display: grid;
+        gap: 12px;
+    }
+
+    input {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        font-size: 16px;
+        outline: none;
+    }
+
+    input:focus {
+        border-color: #ec4899;
+    }
+
+    button {
+        width: 100%;
+        margin-top: 15px;
+        padding: 14px;
+        border: none;
+        border-radius: 10px;
+        background: #ec4899;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    button:hover {
+        opacity: 0.9;
+    }
+
+    .result {
+        margin-top: 30px;
+        padding: 25px;
+        border-radius: 15px;
+        background: #fff1f2;
+        display: none;
+    }
+
+    .names {
+        font-size: 20px;
+        font-weight: bold;
+        color: #be185d;
+    }
+
+    .heart {
+        margin: 15px 0;
+        font-size: 45px;
+    }
+
+    .score {
+        font-size: 58px;
+        font-weight: bold;
+        color: #ec4899;
+    }
+
+    .message {
+        margin-top: 12px;
+        color: #4b5563;
+        line-height: 1.5;
+    }
+
+    .again {
+        margin-top: 18px;
+        background: #374151;
+    }
+</style>
+
+</head>
+
+<body>
+    <main class="container">
+        <h1>💕 Compatibility Checker</h1>
+        <p class="subtitle">Let's see what the algorithm says...</p>
+
+    <div class="inputs">
+        <input
+            type="text"
+            id="nameOne"
+            placeholder="Enter first name"
+            maxlength="30"
+        >
+
+        <input
+            type="text"
+            id="nameTwo"
+            placeholder="Enter second name"
+            maxlength="30"
+        >
+    </div>
+
+    <button id="calculateButton">Check Compatibility</button>
+
+    <section class="result" id="result">
+        <div class="names" id="names"></div>
+        <div class="heart">❤️</div>
+        <div class="score" id="score">0%</div>
+        <p class="message" id="message"></p>
+
+        <button class="again" id="againButton">Try Another Pair</button>
+    </section>
+</main>
+
+<script>
+    const nameOne = document.getElementById("nameOne");
+    const nameTwo = document.getElementById("nameTwo");
+    const calculateButton = document.getElementById("calculateButton");
+    const againButton = document.getElementById("againButton");
+
+    const result = document.getElementById("result");
+    const names = document.getElementById("names");
+    const score = document.getElementById("score");
+    const message = document.getElementById("message");
+
+    const messages = [
+        [0, 20, "The algorithm has concerns. 😅"],
+        [21, 40, "There is potential... somewhere. 🤔"],
+        [41, 60, "Not bad! The algorithm is cautiously optimistic. 😄"],
+        [61, 75, "Now we're getting somewhere! 💕"],
+        [76, 90, "Okay, this is looking seriously good! 🥰"],
+        [91, 99, "The algorithm is practically shipping you two! 💖"],
+        [100, 100, "100%! Even the algorithm is speechless. 💍😂"]
+    ];
+
+    function getCompatibility(first, second) {
+        const combined = first + second;
+        let total = 0;
+
+        for (let i = 0; i < combined.length; i++) {
+            total += combined.charCodeAt(i) * (i + 1);
+        }
+
+        return (total % 101);
+    }
+
+    function getMessage(value) {
+        for (const item of messages) {
+            if (value >= item[0] && value <= item[1]) {
+                return item[2];
+            }
+        }
+
+        return "The algorithm is confused. 😂";
+    }
+
+    function checkCompatibility() {
+        const first = nameOne.value.trim();
+        const second = nameTwo.value.trim();
+
+        if (!first || !second) {
+            alert("Please enter both names.");
+            return;
+        }
+
+        const compatibility = getCompatibility(
+            first.toLowerCase(),
+            second.toLowerCase()
+        );
+
+        names.textContent = `${first} ❤️ ${second}`;
+        score.textContent = `${compatibility}%`;
+        message.textContent = getMessage(compatibility);
+
+        result.style.display = "block";
+    }
+
+    calculateButton.addEventListener("click", checkCompatibility);
+
+    againButton.addEventListener("click", () => {
+        nameOne.value = "";
+        nameTwo.value = "";
+        result.style.display = "none";
+        nameOne.focus();
+    });
+
+    nameTwo.addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+            checkCompatibility();
+        }
+    });
+</script>
+
+</body>
+</html>
